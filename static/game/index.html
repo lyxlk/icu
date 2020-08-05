@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>农码倥偬</title>
+    <meta name="keywords" content="Go聊天室,php websocket聊天室,H5小游戏">
+    <meta name="description" content="农码倥偬 提供的基于Go开发的支持分布式部署的H5游戏">
+    <link id="favicon" href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="/emojionearea/css/normalize.css?_=1596618033" />
+    <link rel="stylesheet" type="text/css" href="/emojionearea/css/emojione.sprites.css?_=1596618033" media="screen">
+    <link rel="stylesheet" type="text/css" href="/emojionearea/css/stylesheet.css?_=1596618033" media="screen">
+    <link rel="stylesheet" href="/layui/css/layim.css?_=1596618033">
+    <link rel="stylesheet" href="/layui/css/layui.css?_=1596618033">
+    <link rel="stylesheet" href="/game/css/comm.css?_=1596618033">
+    <style>
+        .msgList{
+            padding: 3% 2%;
+            color: #ffffff;
+            font-size: 0.5em;
+        }
+
+        .battleRoom {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .battleRoomIndex {
+            float: right;
+        }
+
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">农码倥偬 - 搬砖社区</div>
+
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item layui-this"><a href="">农码社区</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">PHP项目</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="http://chatroom.ivisionsky.com/" target="_blank">PHP聊天室</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">Go项目</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="http://go.ivisionsky.com/" target="_blank">GoLang聊天室</a></dd>
+                    <dd><a href="https://www.ivisionsky.com/" target="_blank">GoLang棋牌室</a></dd>
+                </dl>
+            </li>
+        </ul>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:void(0)" id="UserAvatar">
+                    <img src="/avatars/32.png" class="layui-nav-img">
+                    <span class="loginTips">登录注册</span>
+                </a>
+                <dl class="layui-nav-child loginOption">
+                    <dd>
+                        <a href="javascript:void(0)" id="UserLogin">
+                            二维码登录
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:void(0)" id="UserReg">
+                            一键生成新号
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:void(0)" id="LogOut"  style="display: none">
+                            退了
+                        </a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll" id="SysMsgList">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" style="background-color: #009688">
+                <li class="layui-nav-item">
+                    <a href="javascript:void(0)">系统消息</a>
+                </li>
+            </ul>
+
+            <ul style="width: 90%;height: 100px; word-wrap:break-word; word-break:break-all;font-size: 22px" id="msgListUl">
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="mainBody">
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li class="layui-this GameGuess">H5小游戏</li>
+                    <li class="CommRoomChat">聊天室</li>
+                    <li class="TuHaoList">土豪榜</li>
+                    <li class="userInfo" style="display: none">个人信息</li>
+                    <li>关于</li>
+                </ul>
+
+                <div class="layui-tab-content mainDiv">
+
+                    <!-- 比赛擂台 -->
+                    <div class="layui-tab-item layui-show" id="RoomListDiv">
+                        <div id="game"> </div>
+                        <div id="gameLogs ">
+                            <h3 class="fly-panel-title">历史中奖记录</h3>
+                            <div id="awardLogs">
+                                <dl>
+
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 闲聊 -->
+                    <div class="layui-tab-item ChatRoomDiv">
+                        <div class="layui-row">
+                            <div class="layui-col-md8 pnl" >
+                                <!--消息区-->
+                                <div class="pnl-msgs layim-chat-main">
+                                    <ul>
+                                        <li class="layim-chat-system" style="font-weight: bolder;color: #ff0000">
+                                            <span>系统消息：IP、设备,聊天信息均已被记录，请文明聊天</span>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                                <!--编辑区-->
+                                <div class="editorDiv">
+                                    <form class="layui-form layui-form-pane" lay-filter="sendMsgForm">
+                                        <div class="layui-form-item layui-form-text pnl-text">
+                                            <label class="layui-form-label emojiIcon">
+                                                <img src="/game/images/emoji/1.png" style="width: 22px;cursor: pointer">
+                                            </label>
+                                            <div class="layui-input-block">
+                                                <textarea placeholder="输入最多50字，可回车键发送... " class="layui-textarea" id="talkMsg"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="pnl-btn">
+                                            <button type="button" class="layui-btn layui-btn-normal" id="sendMsg">发送</button>
+
+                                            <button type="button" class="layui-btn layui-btn-primary" id="cleanPnlMsg">清屏</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!--在线用户区-->
+                            <div class="layui-col-md4 onLineInfo">
+                                <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                    <ul class="layui-tab-title">
+                                        <li class="layui-this">在线砖友</li>
+                                        <li class="chatRoomLogs">聊天记录</li>
+                                    </ul>
+                                    <div class="layui-tab-content" >
+                                        <div class="layui-tab-item layui-show inRoomUsers">
+                                            <ul class="site-doc-icon site-doc-anim"></ul>
+                                        </div>
+                                        <div class="layui-tab-item layim-chat-main chatRoomLogsList">
+                                            <ul></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 战绩 -->
+                    <div class="layui-tab-item TuHaoListMap">
+
+                        <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">
+                            <h3 class="fly-panel-title">每日土豪榜</h3>
+
+                            <dl>
+
+
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- 个人中心 -->
+                    <div class="layui-tab-item">
+                        <form class="layui-form UserInfoForm">
+
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    ID
+                                </label>
+                                <div class="layui-input-block">
+                                    <span class="user_id uText"></span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    昵称
+                                </label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="nick"  class="layui-input nick">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    性别
+                                </label>
+                                <div >
+                                    <div class="layui-input-block">
+                                        <select name="sex" class="sex">
+                                            <option value="0">保密</option>
+                                            <option value="1">男</option>
+                                            <option value="2">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    年龄
+                                </label>
+                                <div class="layui-input-block">
+                                    <input type="number" name="age" class="layui-input age" min="1" max="80">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    头像
+                                </label>
+                                <div>
+
+                                    <div class="layui-inline">
+                                        <img src="" class="avatar" style="width: 65px;height: 65px;cursor: pointer" title="点击切换头像">
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    金币
+                                </label>
+                                <div class="layui-input-block">
+                                    <span class="MyGolds uText">0</span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    等级
+                                </label>
+                                <div class="layui-input-block">
+                                    <span class="MyLevel uText">屌丝</span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    登陆二维码
+                                </label>
+                                <div class="layui-input-block qrcode">
+
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    注册时间
+                                </label>
+                                <div class="layui-input-block">
+                                    <span class="reg_time uText"></span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn  layui-btn-normal modifyUserInfo">
+                                        保存修改信息
+                                    </button>
+
+                                    <button type="button" class="layui-btn layui-btn-normal saveLoginQrCode" style="display: none">
+                                        保存二维码
+                                    </button>
+                                </div>
+                                <div class="layui-input-block" style="color: #ff0000;margin-top: 1%">
+                                    "登陆二维码" 是登陆唯一凭证！请妥善保管！
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <!-- 联系我们 -->
+                    <div class="layui-tab-item">
+                        <form class="layui-form ConnectUs" lay-filter="DeveloperInfo">
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    作者邮箱
+                                </label>
+                                <div class="layui-form-mid layui-word-aux">3162997514@qq.com</div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    作者Q群
+                                </label>
+                                <div class="layui-form-mid layui-word-aux">
+
+                                    147271488
+
+                                    &nbsp;
+
+                                    <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=41d85adb2554357dd577c6b087878c4e7d796310d5c1ab78f58436ca3f61df32">
+                                        <img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="农码倥偬" title="农码倥偬">
+                                    </a>
+
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item layui-col-md4" >
+                                <label class="layui-form-label">
+                                    群二维码
+                                </label>
+                                <div class="layui-form-mid layui-word-aux gqrcode">
+                                    <img src="/game/images/gqrcode.png" style="width: 200px;height: 200px;border: 1px solid #a6e1ec">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-col-md8" >
+                                <label class="layui-form-label">
+                                    系统架构
+                                </label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="develop[Nginx]" title="Nginx" checked="">
+                                    <input type="checkbox" name="develop[GoLang]" title="GoLang" checked="">
+                                    <input type="checkbox" name="develop[Beego]" title="Beego" checked="">
+                                    <input type="checkbox" name="develop[Redis]" title="Redis" checked="">
+                                    <input type="checkbox" name="develop[MySQL]" title="MySQL" checked="">
+                                    <input type="checkbox" name="develop[JS]" title="JS" checked="">
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        Copyright © 2020. <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=41d85adb2554357dd577c6b087878c4e7d796310d5c1ab78f58436ca3f61df32">
+            农码倥偬
+        </a> All rights reserved.
+    </div>
+</div>
+
+<script src="/game/js/jquery.min.js?_=1596618033"></script>
+<script src="/game/js/emoji_jQuery.min.js?_=1596618033"></script>
+<script src="/layer/layer.js?_=1596618033"></script>
+<script src="/layui/layui.js?_=1596618033"></script>
+<script src="/game/js/jquery.cookie.js?_=1596618033"></script>
+<script src="/game/js/jquery.qrcode.min.js?_=1596618033"></script>
+<script src="/game/js/common.js?_=1596618033"></script>
+<script src="/game/js/fruit.js?_=1596618033"></script>
+<script src="/game/js/event.js?_=1596618033"></script>
+<script src="/game/js/api.js?_=1596618033"></script>
+<script src="/game/js/hall.js?_=1596618033"></script>
+<script src="/game/js/ws.js?_=1596618033"></script>
+
+<script>
+    //JavaScript代码区域
+    layui.use(['form','element'], function(){
+        let element  = layui.element
+            ,form  = layui.form;
+
+        layui.$('.ConnectUs').on('click', function(){
+            form.val('DeveloperInfo', {
+                "develop[Nginx]": true // "name": "value"
+                ,"develop[GoLang]": true // "name": "value"
+                ,"develop[Beego]": true // "name": "value"
+                ,"develop[Redis]": true //复选框选中状态
+                ,"develop[MySQL]": true
+                ,"develop[JS]": true
+            });
+        });
+
+    });
+
+    OptGameMsg(1);
+
+
+
+    let favicon_flag = 0;
+    let favicon_flag_intval = 0;
+
+    let favicon  = '/favicon.ico';
+    let favicon2 = '/favicon2.ico';
+
+    //验证用户是否在当前面板，没有在当前面板需要修改 favicon 提醒有消息
+    let hiddenProperty = 'hidden' in document ? 'hidden' :
+        'webkitHidden' in document ? 'webkitHidden' :
+            'mozHidden' in document ? 'mozHidden' :
+                null;
+    let visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+    let onVisibilityChange = function(){
+        if (!document[hiddenProperty]) {
+            clearInterval(favicon_flag_intval);
+            favicon_flag = 0;
+            $("#favicon").attr('href', favicon);
+        }else{
+            favicon_flag = 1;
+        }
+    };
+    document.addEventListener(visibilityChangeEvent, onVisibilityChange);
+
+</script>
+</body>
+<span style="display: none">
+    <script type="text/javascript" src="https://s4.cnzz.com/z_stat.php?id=1279048590&web_id=1279048590"></script>
+</span>
+</html>

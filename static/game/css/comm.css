@@ -1,0 +1,385 @@
+
+.mainBody {
+    height: 95%;
+    margin: 1%;
+}
+
+.mainBody .layui-tab {
+    position: relative;
+    bottom: 0;
+    height: 100%;
+}
+
+.mainBody .mainDiv {
+    position: relative;
+    bottom: 0;
+    height: 90%;
+    overflow: auto;
+}
+
+
+.mainBody .ChatRoomDiv {
+    background-color: #F5F6F8;
+    position: relative;
+    bottom: 0;
+    height: 100%;
+}
+
+.mainBody .ChatRoomDiv .layui-row{
+    background-color: #F5F6F8;
+    position: relative;
+    bottom: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.mainBody .ChatRoomDiv .pnl{
+    border-right: 1px solid #c9cacb;
+    
+    height: 100%;
+    bottom: 0;
+}
+
+.mainBody .ChatRoomDiv .msg {
+    overflow: hidden;
+    padding: .3em .3em;
+}
+
+
+.mainBody .ChatRoomDiv .msg.tips  {
+    text-align: center;
+    color: #bfbfbf;
+    line-height: 0;
+    height: 1px;
+    margin: 1.2em 2em;
+    overflow: visible;
+    padding: 0;
+}
+
+.mainBody .ChatRoomDiv .pnl-msgs {
+    width: 99%;
+    padding: 5px 0 !important;
+    bottom:40%;
+    top: 0;
+    height: 62%;
+    position: absolute;
+}
+
+.mainBody .ChatRoomDiv .editorDiv {
+    width: 100%;
+    position: absolute;
+    bottom: 5PX;
+}
+
+.mainBody .ChatRoomDiv .pnl-text{
+    width: 99%;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.mainBody .ChatRoomDiv .pnl-btn{
+    height: 30px;
+    margin: 5px 0;
+    right: 0;
+    float: right;
+    position: relative;
+    bottom: 2px;
+}
+
+.mainBody .ChatRoomDiv .pnl-btn button {
+    margin: 0 5px;
+}
+
+.mainDiv .onLineInfo {
+    position: relative;
+    height: 90%;
+    bottom: 0;
+    top: 0;
+}
+
+.UserInfoForm .uText {
+    line-height: 38px;
+}
+
+
+@media screen and (max-width: 1000px) {
+    .mainDiv .onLineInfo{
+        top: 200px;
+    }
+}
+
+.mainDiv .onLineInfo .layui-tab-content{
+    position: relative;
+    height: 100%;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.mainDiv .chatRoomLogsList {
+    position: relative;
+    height: 100%;
+    bottom: 0;
+    overflow-y: auto;
+    padding: 0 !important;
+}
+
+.mainDiv .inRoomUsers {
+    position: relative;
+    height: 100%;
+    bottom: 0;
+    overflow-y: auto;
+    padding: 0 !important;
+}
+
+.inRoomUsers .site-doc-icon li {
+    text-align: center;
+    width: 80px;
+    height: 100px;
+    overflow: hidden;
+    margin: 5px;
+    float: left;
+}
+
+.inRoomUsers .site-doc-icon li .layui-anim {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    margin: 0 auto 10px;
+    text-align: center;
+    background-color: #009688;
+    cursor: pointer;
+    color: #fff;
+    border-radius: 50%;
+}
+
+.mainDiv .fly-panel-title {
+    position: relative;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 15px;
+    border-bottom: 1px dotted #E9E9E9;
+    color: #333;
+    border-radius: 2px 2px 0 0;
+    font-size: 14px;
+}
+
+.mainDiv .fly-rank dl {
+    position: relative;
+    min-height: 100px;
+    overflow: hidden;
+    margin-left: 20px;
+    text-align: center;
+    font-size: 0;
+}
+
+.mainDiv .fly-rank dd {
+    cursor: pointer;
+    position: relative;
+    width: 85px;
+    height: 105px;
+    margin: 10px 25px 5px 0;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 12px;
+    float: left;
+}
+
+.mainDiv .fly-rank dd a img {
+    width: 85px;
+    height: 85px;
+    border-radius: 2px;
+}
+
+.mainDiv .fly-rank dd a cite {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    background-color: rgba(0,0,0,.2);
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mainDiv .fly-rank dd a i {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-style: normal;
+}
+
+.mainDiv #awardLogs {
+    height: 55px;
+    width: auto;
+}
+
+.emoji_container {
+    position: relative;
+    z-index: 10000;
+}
+
+
+.piece {
+    width:110px;
+    height:110px;
+    border:1px solid red;
+}
+.win_piece {
+    background:rgba(255, 0, 0, 0.4) none repeat scroll 0 0 !important;
+    filter:alpha(opacity=40);
+    background-color:Red;
+    width:110px;
+    height:110px;
+    border:1px solid red;
+}
+.bet {
+    width:110px;
+    height:87px;
+    border:1px solid red;
+    display:block;
+    cursor:pointer;
+}
+.b_bar {
+    background:url(/game/images/fruit/b_bar.png) no-repeat center;
+}
+.s_bar {
+    background:url(/game/images/fruit/s_bar.png) no-repeat center;
+}
+.bar {
+    background:url(/game/images/fruit/bar.png) no-repeat center;
+}
+.b_seven {
+    background:url(/game/images/fruit/b_77.png) no-repeat center;
+}
+.s_seven {
+    background:url(/game/images/fruit/s_77.png) no-repeat center;
+}
+.seven {
+    background:url(/game/images/fruit/77.png) no-repeat center;
+}
+.b_star {
+    background:url(/game/images/fruit/b_star.png) no-repeat center;
+}
+.s_star {
+    background:url(/game/images/fruit/s_star.png) no-repeat center;
+}
+.star {
+    background:url(/game/images/fruit/star.png) no-repeat center;
+}
+.b_watermelons {
+    background:url(/game/images/fruit/b_watermelons.png) no-repeat center;
+}
+.s_watermelons {
+    background:url(/game/images/fruit/s_watermelons.png) no-repeat center;
+}
+.watermelons {
+    background:url(/game/images/fruit/watermelons.png) no-repeat center;
+}
+.b_alarm {
+    background:url(/game/images/fruit/b_alarm.png) no-repeat center;
+}
+.s_alarm {
+    background:url(/game/images/fruit/s_alarm.png) no-repeat center;
+}
+.alarm {
+    background:url(/game/images/fruit/alarm.png) no-repeat center;
+}
+.b_coconut {
+    background:url(/game/images/fruit/b_coconut.png) no-repeat center;
+}
+.s_coconut {
+    background:url(/game/images/fruit/s_coconut.png) no-repeat center;
+}
+.coconut {
+    background:url(/game/images/fruit/coconut.png) no-repeat center;
+}
+.b_orange {
+    background:url(/game/images/fruit/b_orange.png) no-repeat center;
+}
+.s_orange {
+    background:url(/game/images/fruit/s_orange.png) no-repeat center;
+}
+.orange {
+    background:url(/game/images/fruit/orange.png) no-repeat center;
+}
+.b_apple {
+    background:url(/game/images/fruit/b_apple.png) no-repeat center;
+}
+.s_apple {
+    background:url(/game/images/fruit/s_apple.png) no-repeat center;
+}
+.apple {
+    background:url(/game/images/fruit/apple.png) no-repeat center;
+}
+.cha {
+    background:url(/game/images/fruit/cha.png) no-repeat center;
+}
+.lhj_bet_table td {
+    padding:3px;
+    text-align:center;
+}
+.lhj_input {
+    border-left:1px solid #999;
+    border-top:1px solid #999;
+    border-right:1px solid #eee;
+    border-bottom:1px solid #eee;
+    text-align:center;
+}
+.lhj_money_input {
+    width:170px;
+    height:40px;
+    font-size:38px;
+    margin:0;
+    padding:0;
+    line-height:40px;
+    display:block;
+}
+.lhj_span {
+    font-size:16px;
+    width:180px;
+    display:inline-block;
+    text-align:center;
+    padding:3px;
+}
+.lhj_bet_table .lhj_bet_input {
+    width:65px;
+    height:20px;
+    margin:0;
+    padding:0;
+    line-height:20px;
+    font-size:16px;
+}
+.lhj_bet_btn {
+    display:inline-block;
+    cursor:pointer;
+    width:182px;
+    height:40px;
+    line-height:40px;
+    text-align:center;
+    background-color:#fff;
+    margin:3px;
+    color:Black;
+    font-size:24px;
+    border-left:1px solid #eee;
+    border-top:1px solid #eee;
+    border-right:1px solid #999;
+    border-bottom:1px solid #999;
+}
+
+#betBei {
+    margin: 5px;
+    height: 30px;
+    width: 70px;
+}
