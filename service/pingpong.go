@@ -15,7 +15,7 @@ import (
 func (client *AClient) Ping()  {
 
 	//设置可以ping的默认状态
-	ticker := time.NewTicker(PingPeriod)
+	ticker := time.NewTicker(10 * time.Second)
 
 	defer func() {
 		ticker.Stop()
