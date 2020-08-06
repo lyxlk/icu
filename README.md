@@ -19,3 +19,5 @@
 
 
 项目演示地址 : https://icu.ivisionsky.com
+
+部署路径: GOPATH/src/
