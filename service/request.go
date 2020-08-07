@@ -82,7 +82,30 @@ func (client *AClient) SendMsg (aJson ClientMsg) {
 		PublishEvent[client.RoomId] <- &aEvent
 
 		//写入数据库
-		go models.SaveChatLog(client.RoomId,client.UserId,content)
+		go models.SaveChatLog(client.RoomId,client.UserId,content,aJson.Cmd)
+	}
+}
+
+//聊天室发文件 图片/语音/视频
+func (client *AClient) SendChatFile (aLink string,cmd models.EventType) {
+
+	//并发检测
+	UniqueKey := fmt.Sprintf("Request|%v",cmd)
+
+	_,err := CUtil.ReqAnti(client.UserId,UniqueKey, 50,"PX")
+	if err != nil {
+		client.WsSendMsg(models.EventToast,"请勿频繁操作",nil)
+		return
+	}
+
+	//构建消息事件
+	status,aEvent := models.NewEvent(client.UserId,cmd,aLink,nil)
+
+	if status {
+		PublishEvent[client.RoomId] <- &aEvent
+
+		//写入数据库
+		go models.SaveChatLog(client.RoomId,client.UserId,aLink,cmd)
 	}
 }
 

@@ -29,6 +29,7 @@ type ChatLogStruct struct {
 	Avatar		int			`json:"avatar"         orm:"-"`
 	Nick		string		`json:"nick"           orm:"-"`
 	Content		string		`json:"content"        orm:"column(content)"`
+	Cmd			string		`json:"cmd"            orm:"column(cmd)"`
 	Time		int64		`json:"time"           orm:"column(time)"`
 }
 
@@ -95,16 +96,16 @@ func getTbChatLog(unixTime int64) (table string) {
 }
 
 
-func SaveChatLog (roomId config.RoomIdType,UserId uint64,content string) (err error) {
+func SaveChatLog (roomId config.RoomIdType,UserId uint64,content string,cmd EventType) (err error) {
 
 	nowTime := time.Now().Unix()
 	table 	:= getTbChatLog(nowTime)
 
 	o 		:= orm.NewOrm()
-	sql 	:= "INSERT INTO %s(`room_id`,`user_id`,`content`,`time`) VALUE( ?, ?, ?, ?)"
+	sql 	:= "INSERT INTO %s(`room_id`,`user_id`,`content`,`cmd`,`time`) VALUE( ?, ?, ?, ?, ?)"
 	sql 	 = fmt.Sprintf(sql,table)
 
-	_,err    = o.Raw(sql,roomId,UserId,content,nowTime).Exec()
+	_,err    = o.Raw(sql,roomId,UserId,content,cmd,nowTime).Exec()
 
 	if err != nil {
 		logs.Error("聊天记录失败",err)
@@ -159,7 +160,7 @@ func GetChatLogList(roomId config.RoomIdType,page uint,pageSize uint) (err error
 
 		table := getTbChatLog(time.Now().Unix())
 
-		sql := "SELECT `room_id`,`user_id`,`content`,`time` FROM %s WHERE `room_id` = ? ORDER BY `id` DESC LIMIT ?,?"
+		sql := "SELECT `room_id`,`user_id`,`content`,`cmd`,`time` FROM %s WHERE `room_id` = ? ORDER BY `id` DESC LIMIT ?,?"
 		sql  = fmt.Sprintf(sql,table)
 		o   := orm.NewOrm()
 		num,err := o.Raw(sql,roomId,offset,pageSize).QueryRows(&aData)

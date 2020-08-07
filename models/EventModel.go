@@ -27,6 +27,9 @@ const (
 	EventGameBetNoWin           = 10000001
 	EventGameBetWin             = 10000002
 	EventGameBetLuck            = 10000003
+	EventSendChatImg            = 10000004
+	EventSendChatAudio          = 10000005
+	EventSendChatVedio          = 10000006
 
 )
 
@@ -50,6 +53,9 @@ var (
 		EventGameBetNoWin             : "未中奖",
 		EventGameBetWin               : "押注中奖",
 		EventGameBetLuck              : "开奖",
+		EventSendChatImg              : "发聊天图片",
+		EventSendChatAudio            : "发语音链接",
+		EventSendChatVedio            : "发视频链接",
 	}
 
 	//铭感词管理员

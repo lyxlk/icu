@@ -86,14 +86,14 @@ let renderLoginUser = function(data) {
  * @param avatar
  * @param unitTime
  * @param content
+ * @param cmd
  * @returns {string}
  * @constructor
  */
-let RenderMsg = function (user_id,nick,avatar,unitTime,content) {
+let RenderMsg = function (user_id,nick,avatar,unitTime,content,cmd) {
     let localUid = parseInt($.cookie("user_id"));
 
     let contentInfo = contentEmojiParse(content);
-
 
     let whosMsg = "";
     if(localUid === user_id) {
@@ -103,13 +103,48 @@ let RenderMsg = function (user_id,nick,avatar,unitTime,content) {
     let avatarPath  = GetUserAvatar(avatar);
     let time        = UnixTimeFormat(unitTime * 1000);
 
-    let html    = '<li class="' + whosMsg + '">\n' +
-        '               <div class="layim-chat-user">\n' +
-        '                   <img src="' + avatarPath +'">\n' +
-        '                   <cite><i style="padding:0">'+time+'</i> '+nick+' </cite>\n' +
-        '               </div>\n' +
-        '               <div class="layim-chat-text" style="max-width: 200px;white-space:normal; word-break:break-all;">'+contentInfo+'</div>\n' +
-        '          </li>';
+    let html        = "";
+    switch (parseInt(cmd)) {
+        case 10002 : //聊天消息
+            html    = '<li class="' + whosMsg + '">\n' +
+                '               <div class="layim-chat-user">\n' +
+                '                   <img src="' + avatarPath +'">\n' +
+                '                   <cite><i style="padding:0">'+time+'</i> '+nick+' </cite>\n' +
+                '               </div>\n' +
+                '               <div class="layim-chat-text" style="max-width: 200px;white-space:normal; word-break:break-all;">'+contentInfo+'</div>\n' +
+                '          </li>';
+            break;
+        case 10000004 : //图片
+            html    = '<li class="' + whosMsg + '">\n' +
+                '               <div class="layim-chat-user">\n' +
+                '                   <img src="' + avatarPath +'">\n' +
+                '                   <cite><i style="padding:0">'+time+'</i> '+nick+' </cite>\n' +
+                '               </div>\n' +
+                '               <div class="layim-chat-text" style="max-width: 200px;white-space:normal; word-break:break-all;"><img class="layui-layim-photos" src="'+content+'"></div>\n' +
+                '          </li>';
+            break;
+
+        case 10000005 :
+            html    = '<li class="' + whosMsg + '">\n' +
+                '               <div class="layim-chat-user">\n' +
+                '                   <img src="' + avatarPath +'">\n' +
+                '                   <cite><i style="padding:0">'+time+'</i> '+nick+' </cite>\n' +
+                '               </div>\n' +
+                '               <div class="layim-chat-text" style="max-width: 200px;white-space:normal; word-break:break-all;"><div class="layui-unselect layui-layim-audio playAudio"  data-src="'+content+'"><i class="layui-icon"></i><p>音频消息</p></div></div>\n' +
+                '          </li>';
+            break;
+
+        case 10000006 :
+            html    = '<li class="' + whosMsg + '">\n' +
+                '               <div class="layim-chat-user">\n' +
+                '                   <img src="' + avatarPath +'">\n' +
+                '                   <cite><i style="padding:0">'+time+'</i> '+nick+' </cite>\n' +
+                '               </div>\n' +
+                '               <div class="layim-chat-text" style="max-width: 200px;white-space:normal; word-break:break-all;"><div class="layui-unselect layui-layim-video playVideo" data-src="'+content+'"><i class="layui-icon"></i></div></div>\n' +
+                '          </li>';
+            break;
+    }
+
 
     return html
 };
@@ -144,12 +179,13 @@ let Room000Msg = function(data) {
         $(".ChatRoomDiv .pnl-msgs li").remove();
     }
 
-    let msg = RenderMsg(data.user_id,data.nick,data.avatar,data.time,content);
+    let msg = RenderMsg(data.user_id,data.nick,data.avatar,data.time,content,data.type);
 
     $(".ChatRoomDiv .pnl-msgs ul").append(msg);
 
     scrollToEnd(2);
 };
+
 
 
 /**
@@ -364,6 +400,19 @@ let CommMessage = function (aJson) {
         case 10000003 : //摇奖
             SetBetLuckRet(data);
             break;
+
+        case 10000004 : //发图片
+            Room000Msg(data);
+            break;
+
+        case 10000005 : //分享网络音频
+            Room000Msg(data);
+            break;
+
+        case 10000006 : //分享网络视频
+            Room000Msg(data);
+            break;
+
 
     }
 };

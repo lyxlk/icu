@@ -310,6 +310,122 @@ $(document).ready(function () {
         CheckLogin(false)
     });
 
+    $(".UploadImgIcon").click(function(){
+        $("#upload").trigger('click');
+    });
+
+    $("#upload").change(function(){
+        //formdata对象，用来模拟表单
+        let formData = new FormData($('#uploadform')[0]);
+        $("#uploadform")[0].reset();
+
+        $.ajax({
+            url:"/fight/home/upload",
+            type:"post",
+            data:formData,
+            processData: false, // 告诉jQuery不要去处理发送的数据
+            contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+            success:function(data){
+                if (parseInt(data.iRet) !== 1) {
+                    layer.alert(data.sMsg);
+                    return ;
+                }
+            },
+            dataType:"json"
+        })
+    });
+
+    //播放音频
+    $(document).on('click','.playAudio',function () {
+
+        let othis = $(this);
+
+        var audioData = othis.data('audio')
+            ,audio = audioData || document.createElement('audio')
+            ,pause = function(){
+            audio.pause();
+            othis.removeAttr('status');
+            othis.find('i').html('&#xe652;');
+        };
+        if(othis.data('error')){
+            return layer.msg('播放音频源异常');
+        }
+        if(!audio.play){
+            return layer.msg('您的浏览器不支持audio');
+        }
+        if(othis.attr('status')){
+            pause();
+        } else {
+            audioData || (audio.src = othis.data('src'));
+            audio.play();
+            othis.attr('status', 'pause');
+            othis.data('audio', audio);
+            othis.find('i').html('&#xe651;');
+            //播放结束
+            audio.onended = function(){
+                pause();
+            };
+            //播放异常
+            audio.onerror = function(){
+                layer.msg('播放音频源异常');
+                othis.data('error', true);
+                pause();
+            };
+        }
+
+    });
+
+    $(".UploadAudioIcon").click(function () {
+        layer.prompt({title: '请输入网络音频地址', formType: 3}, function(pass, index){
+            layer.close(index);
+            var cond = {};
+
+            cond.link = pass;
+
+            adxRequest("/fight/home/audio",function (data) {
+                if (parseInt(data.iRet) !== 1) {
+                    layer.alert(data.sMsg);
+                    return ;
+                }
+            },cond,"POST")
+        });
+    });
+
+    $(document).on('click','.playVideo',function () {
+
+        let videoData = $(this).data('src')
+            ,video = document.createElement('video');
+        if(!video.play){
+            return layer.msg('您的浏览器不支持video');
+        }
+
+        layer.open({
+            type: 1
+            ,title: '播放视频-网络视频可能有跨域限制而无法播放'
+            ,area: ['460px', '300px']
+            ,maxmin: true
+            ,shade: false
+            ,content: '<div style="background-color: #000; height: 100%;"><video style="position: absolute; width: 100%; height: 100%;" src="'+ videoData +'" loop="loop" autoplay="autoplay"></video></div>'
+        });
+
+    });
+
+    $(".UploadVideoIcon").click(function () {
+        layer.prompt({title: '请输入网络视频地址', formType: 3}, function(pass, index){
+            layer.close(index);
+            var cond = {};
+
+            cond.link = pass;
+
+            adxRequest("/fight/home/video",function (data) {
+                if (parseInt(data.iRet) !== 1) {
+                    layer.alert(data.sMsg);
+                    return ;
+                }
+            },cond,"POST")
+        });
+    });
+
 
     (function () {
 

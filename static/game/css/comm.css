@@ -100,6 +100,12 @@
     top: 0;
 }
 
+.mainBody .ChatRoomDiv .editorDiv .layui-icon{
+    margin: 2px 5px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
 .UserInfoForm .uText {
     line-height: 38px;
 }

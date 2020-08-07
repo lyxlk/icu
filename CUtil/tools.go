@@ -140,6 +140,17 @@ func CreateOrderId(UserId uint64,actId int) string {
 }
 
 
+//检查目录是否存在
+func CheckFileIsExist(filename string) bool {
+
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+
+		return false
+	}
+
+	return true
+}
+
 
 //获取指定目录路径
 func GetAppPath(dirName string) string {

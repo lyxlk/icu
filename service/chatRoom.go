@@ -252,6 +252,9 @@ func PublishBroadcast(RoomId config.RoomIdType, event *models.EventInfo) {
 	case models.EventJoin          : fallthrough
 	case models.EventClientSendAwd : fallthrough
 	case models.EventGameBetNoWin  : fallthrough
+	case models.EventSendChatImg   : fallthrough
+	case models.EventSendChatAudio : fallthrough
+	case models.EventSendChatVedio : fallthrough
 	case models.EventLeave         :
 		aRoom.Range(func(key, val interface{}) bool {
 

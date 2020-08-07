@@ -25,7 +25,7 @@ let RenderChatRoomLogsList = function(page) {
         if (aList.length > 0 ) {
             $.each(aList,function (kev,val) {
 
-                let msg = RenderMsg(val.user_id,val.nick,val.avatar,val.time,val.content);
+                let msg = RenderMsg(val.user_id,val.nick,val.avatar,val.time,val.content,val.cmd);
 
                 $(".ChatRoomDiv .chatRoomLogsList ul").prepend(msg);
 
@@ -47,8 +47,3 @@ let RenderChatRoomLogsList = function(page) {
 
     },cond,"POST")
 };
-
-$(document).ready(function() {
-
-});
-

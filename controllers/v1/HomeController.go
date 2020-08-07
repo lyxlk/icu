@@ -10,8 +10,11 @@ import (
 	"app/icu/CUtil"
 	"app/icu/config"
 	"app/icu/models"
+	"app/icu/service"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
+	"path"
+	"strings"
 )
 
 type HomeController struct {
@@ -91,3 +94,82 @@ func (this *HomeController) Modify ()  {
 	this.JsonResponse(1,"OK",nick)
 }
 
+//发送聊天文件
+func (this *HomeController) Upload() {
+
+	//发送消息
+	hasJoin,AClient := service.HasJoinRoom(this.GetUserId(true))
+	if !hasJoin {
+		this.JsonResponse(-1,"您已不在聊天室",nil)
+	}
+
+	key := "img"
+
+	file, handler, err := this.GetFile(key)
+	if err != nil {
+		this.JsonResponse(-1,err.Error(),nil)
+	}
+	defer file.Close()
+
+	fileExt := path.Ext(handler.Filename)
+
+	fileExt  = strings.ToLower(fileExt)
+
+	canUpload := false
+
+	for _,val := range config.OnlyUploadImgExt {
+		if val == fileExt {
+			canUpload = true
+			break
+		}
+	}
+
+	if !canUpload {
+		exts := strings.Join(config.OnlyUploadImgExt," , ")
+		this.JsonResponse(-1,"仅允许上传"+exts+"格式图片",nil)
+	}
+
+	err,link := this.UpLoadFileToServer(key,"chatFiles",config.UploadSize)
+	if err != nil {
+		this.JsonResponse(-1,err.Error(),nil)
+	}
+
+	//发图片
+	AClient.SendChatFile(link,models.EventSendChatImg)
+
+	this.JsonResponse(1,"OK",map[string]string{"link":link})
+}
+
+//分享网络音频
+func (this *HomeController) NetWorkAudio() {
+
+	link := this.GetString("link")
+
+	//发送消息
+	hasJoin,AClient := service.HasJoinRoom(this.GetUserId(true))
+	if !hasJoin {
+		this.JsonResponse(-1,"您已不在聊天室",nil)
+	}
+
+	//发图片
+	AClient.SendChatFile(link,models.EventSendChatAudio)
+
+	this.JsonResponse(1,"OK",nil)
+}
+
+//分享网络视频
+func (this *HomeController) NetWorkVideo() {
+
+	link := this.GetString("link")
+
+	//发送消息
+	hasJoin,AClient := service.HasJoinRoom(this.GetUserId(true))
+	if !hasJoin {
+		this.JsonResponse(-1,"您已不在聊天室",nil)
+	}
+
+	//发图片
+	AClient.SendChatFile(link,models.EventSendChatVedio)
+
+	this.JsonResponse(1,"OK",nil)
+}

@@ -39,7 +39,8 @@ const (
 	BaseYmNoFix					= "200601"
 	SessionExpire				= 3600 //session 有效期
 	DefaultNick 				= "农码倥偬用户"
-	QrCodeSize 					= 10240 //二维码文件大小限制 10kB
+	QrCodeSize 					= 10240   //二维码文件大小限制 10kB
+	UploadSize 					= 2097152 //聊天图片大小限制 2M
 
 	DefaultAge 					= 18 //默认年龄
 	AvatarNums 					= 36 //系统头像数量
@@ -53,6 +54,8 @@ const (
 
 
 var (
+
+	OnlyUploadImgExt = []string{".jpg",".png",".gif"}
 
 	CommSalt = []byte("abcdE123&^*^&*@&") //公共可逆加密盐值 注意长度符合 aes.NewCipher 要求
 

@@ -37,6 +37,9 @@ func init() {
 		beego.NSNamespace("/home",
 			beego.NSRouter("/avatar",&v1.HomeController{},"post:RandAvatar"),
 			beego.NSRouter("/modify",&v1.HomeController{},"post:Modify"),
+			beego.NSRouter("/upload",&v1.HomeController{},"post:Upload"),
+			beego.NSRouter("/audio",&v1.HomeController{},"post:NetWorkAudio"),
+			beego.NSRouter("/video",&v1.HomeController{},"post:NetWorkVideo"),
 		),
 
 		beego.NSNamespace("/room",

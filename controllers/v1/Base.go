@@ -5,10 +5,15 @@ import (
 	"app/icu/config"
 	"app/icu/models"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"io"
 	"math/rand"
 	"net"
+	"os"
+	"path"
 	"strconv"
 	"time"
 )
@@ -141,4 +146,63 @@ func (this *BaseController) GetUserId(stop bool) uint64 {
  */
 func (this *BaseController) GetUserIp() string {
 	return analysisContext(this.Ctx,"GetIPV4")
+}
+
+
+/**
+	文件上传
+	fileName : file data in file upload field named as key.
+	FileDir  : 存放路径
+	return: error
+	return: string link 相对目录文件路径
+ */
+func (this *BaseController) UpLoadFileToServer(key string,FileDir string,maxSize int64) (err error,link string) {
+
+	file, handler, err := this.GetFile(key)
+	if err != nil {
+		return err,""
+	}
+
+	defer file.Close()
+
+	if  handler.Size > maxSize {
+		ret  := float64(maxSize / 1024 /1024)
+		err  := fmt.Sprintf("请上传小于%.1fM图片", ret)
+		return errors.New(err),""
+	}
+
+	rootPath  := CUtil.GetAppPath("static")
+
+	uploadDir := "/" + FileDir + "/"
+
+	dirExist  := CUtil.CheckFileIsExist(rootPath + uploadDir)
+
+	if !dirExist {
+		err := os.Mkdir(rootPath + uploadDir, os.ModePerm) //创建文件夹
+		if err != nil {
+
+			return err,""
+		}
+	}
+
+	now          := time.Now().UnixNano() / 1e6
+
+	fileExt 	 := path.Ext(handler.Filename)
+
+	newFileName  := fmt.Sprintf("%d%s",now,fileExt)
+
+	newFile, err := os.OpenFile(rootPath + uploadDir + newFileName, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return err,""
+	}
+
+	_,err = io.Copy(newFile, file)
+
+	if err != nil {
+		return err , ""
+	}
+
+	basePathFile := uploadDir + newFileName
+
+	return nil,basePathFile
 }
